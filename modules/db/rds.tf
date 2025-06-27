@@ -17,10 +17,6 @@ data "aws_rds_engine_version" "postgres_latest" {
 resource "aws_db_subnet_group" "postgres" {
   name       = "django-db-subnet-group"
   subnet_ids = data.aws_subnets.default.ids
-
-  tags = {
-    Name = "Django DB subnet group"
-  }
 }
 
 resource "aws_db_instance" "postgres" {

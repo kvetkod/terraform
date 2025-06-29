@@ -152,7 +152,4 @@ resource "aws_acm_certificate_validation" "cert_validation" {
   validation_record_fqdns = [
     for record in aws_route53_record.cert_validation : record.fqdn
   ]
-
-  
-  depends_on = [aws_alb.django_lb]
 }

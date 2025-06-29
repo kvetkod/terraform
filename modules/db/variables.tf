@@ -7,3 +7,6 @@ variable "db_password" {
     type = string
 }
 
+variable "rds_id" {
+    type = string
+}

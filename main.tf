@@ -22,5 +22,53 @@ module "rds"{
 
   db_password = var.db_password
   db_username = var.db_username
+  rds_id = aws_security_group.rds.id
 }
 
+module "ecs" {
+  source = "./modules/ecs"
+  depends_on = [ module.alb ]
+
+  db_host = var.db_host
+  db_name = var.db_name
+  db_password = var.db_password
+  db_username = var.db_username
+  rds_id = aws_security_group.rds.id
+  tg_arn = module.alb.tg_arn
+}
+
+
+resource "aws_security_group" "rds" {
+  name        = "django-rds-sg"
+  description = "Security group for Django RDS instance"
+  vpc_id      = data.aws_vpc.default.id
+
+  ingress {
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    cidr_blocks = ["172.31.0.0/16"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["172.31.0.0/16"]
+  }
+
+  tags = {
+    Name = "django-rds-sg"
+  }
+}
+
+data "aws_subnets" "default" {
+    filter{
+        name = "vpc-id"
+        values = [data.aws_vpc.default.id]
+    }
+}
+
+data "aws_vpc" "default" {
+    default = true
+}

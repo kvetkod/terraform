@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
         source = "hashicorp/aws"
-        version = "~> 6.0"
+      version = "~> 5.44.0"
     }
   }
 }
@@ -18,11 +18,8 @@ resource "aws_alb" "django_lb" {
 
 resource "aws_lb_listener" "django-listener" {
     load_balancer_arn = aws_alb.django_lb.arn
-    port = 443
-    protocol = "HTTPS"
-    ssl_policy        = "ELBSecurityPolicy-2016-08"
-    certificate_arn   = aws_acm_certificate_validation.cert_validation.certificate_arn
-
+    port = 80
+    protocol = "HTTP"
 
     default_action {
       type = "fixed-response"
@@ -39,8 +36,8 @@ resource "aws_security_group" "django_sg" {
     name = "django-security-group"
 
   ingress {
-      from_port   = 443
-      to_port     = 443
+      from_port   = 80
+      to_port     = 80
       protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
   }
@@ -99,7 +96,7 @@ resource "aws_lb_listener_rule" "asg" {
   }
 }
 
-
+/*
 resource "aws_route53_zone" "my_zone" {
   name = "site-for-agency.com" 
 }
@@ -153,3 +150,4 @@ resource "aws_acm_certificate_validation" "cert_validation" {
     for record in aws_route53_record.cert_validation : record.fqdn
   ]
 }
+*/

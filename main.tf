@@ -30,7 +30,7 @@ module "ecs" {
   source = "./modules/ecs"
   depends_on = [ module.alb ]
 
-  db_host = var.db_host
+  db_host = module.rds.db_host
   db_name = var.db_name
   db_password = var.db_password
   db_username = var.db_username
